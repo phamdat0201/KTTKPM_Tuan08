@@ -1,7 +1,9 @@
 package com.se.StudentService.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +22,11 @@ public class StudentController {
 	@Autowired
     private RestTemplate restTemplate;
  
-	
 //	@RequestMapping(path = "students")
 //	public List<Student> getAllStudents(){
 //		return studentRepository.findAll();
 //	}
-	@GetMapping("/students")
+	@GetMapping("/students2")
     public List<StudentDto> getAll2() {
         List<StudentDto> studentDtos = new ArrayList<>();
         List<Student> students = studentRepository.findAll();
@@ -34,5 +35,20 @@ public class StudentController {
             studentDtos.add(new StudentDto(student.getStudentId(), student.getName(), student.getAge(), o));
         }
         return studentDtos;
+    }
+	@GetMapping("/students")
+    public List<Map<String, Object>> getAll() {
+        List<Student> students = studentRepository.findAll();
+        List<Map<String, Object>> maps = new ArrayList<>();
+        for (Student student : students) {
+        	HashMap<String, Object> map = new HashMap<>();
+            Object o = restTemplate.getForObject("http://localhost:2222/mentors/" + student.getMentorId(), Object.class);
+            map.put("studentId", student.getStudentId());
+            map.put("name", student.getName());
+            map.put("age", student.getAge());
+            map.put("mentor", o);
+            maps.add(map);
+        }
+        return maps;
     }
 }

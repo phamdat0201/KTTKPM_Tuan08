@@ -30,11 +30,11 @@ public class MentorController {
 	}
 	@GetMapping("/mentors/{id}")
     public Mentor getOne(@PathVariable String id) throws JsonProcessingException {
-        Object value = redisTemplate.opsForValue().get("passenger:" + id);
+        Object value = redisTemplate.opsForValue().get("mentor:" + id);
         if (value != null) {
-            Mentor passenger = objectMapper.readValue((String) value, Mentor.class);
-            System.out.println("object from Redis: "+passenger);
-            return passenger;
+            Mentor mentor = objectMapper.readValue((String) value, Mentor.class);
+            System.out.println("object from Redis: "+mentor);
+            return mentor;
         }
         return studentRepository.findById(id).get();
     }
